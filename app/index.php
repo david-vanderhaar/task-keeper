@@ -31,8 +31,8 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
     var_dump(isset($_GET['tagName']));
   }
 
-  if (isset($_GET['tag_name'])) {
-    $safetag = htmlentities($_GET['tagName']);
+  if (isset($_GET['newTag'])) {
+    $safetag = htmlentities($_GET['newTag']);
     addTag(getDb(), $safetag);
   }
 
@@ -59,14 +59,31 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
 
     $taskDur = getTaskDur($db, $startTime, $endTime);
 
-    $stmt = "insert into task (task_name, task_start, task_end, task_dur, tag_id) values ("
-    . '\'' . $task . '\''
-    . ', ' . '\'' . $startTime . '\''
-    . ', ' . '\'' . $endTime . '\''
-    . ', ' . '\'' . $taskDur[0]['?column?'] . '\''
-    . ', ' . '\'' . $tag_id . '\''
-    . ');';
+    if ($tag_name != null) { 
+      $stmt = "insert into task (task_name, task_start, task_end, task_dur, tag_id) values ("
+      . '\'' . $task . '\''
+      . ', ' . '\'' . $startTime . '\''
+      . ', ' . '\'' . $endTime . '\''
+      . ', ' . '\'' . $taskDur[0]['?column?'] . '\''
+      . ', ' . '\'' . $tag_id . '\''
+      . ');';
+  } else if ($tag_name == null) {
+      $stmt = "insert into task (task_name, task_start, task_end, task_dur) values ("
+      . '\'' . $task . '\''
+      . ', ' . '\'' . $startTime . '\''
+      . ', ' . '\'' . $endTime . '\''
+      . ', ' . '\'' . $taskDur[0]['?column?'] . '\''
+      . ');';
+  }
     print_r($stmt);
+    $result = pg_query($stmt);
+
+  }
+
+  function addTag ($db, $tag_name) {
+    $stmt = "insert into tag (tag_name) values ("
+    . '\'' . $tag_name . '\''
+    .');';
     $result = pg_query($stmt);
   }
 
@@ -83,6 +100,15 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
 
   function getTasks($db) {
     $request = pg_query(getDb(), "SELECT * FROM task order by task_start;");
+    return pg_fetch_all($request);
+  }
+
+  function getTagsForTasks($db, $task_tag_id) {
+    $request = pg_query(getDb(),
+      "SELECT tag_name FROM tag WHERE tag_id=" . '\'' . $task_tag_id . '\'' . ';');
+    //print_r($task_tag_id);
+    //print_r('tag name: ' . $tag_name);
+    // var_dump(pg_fetch_all($request)[0]["tag_name"]);
     return pg_fetch_all($request);
   }
 
@@ -120,10 +146,7 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
 
 <div class="container-fluid">
 <div class="row">
-<div class="col-xs-0 col-md-1">
-  
-</div>
-<div class="col-xs-12 col-md-10">
+<div class="col-xs-12 col-md-6 offset-md-3">
 <form class="form center" method="GET">
 
   <label class="sr-only" for="task">Task</label>
@@ -133,7 +156,7 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
     <div class="input-group">
       <div class="input-group-btn">
         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Select Tag
+          Select or Add Tag
         </button>
         <div class="dropdown-menu">
         <?php 
@@ -146,11 +169,12 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
           }
         ?>
           <div role="separator" class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Add New Tag</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#addTagModal">Add New Tag</a>
         </div>
       </div>
       <label class="sr-only" for="tagName">Selected Tag</label>
-      <input type="text" id="tagDisplay" name="tagName" placeholder="Selected Tag" value="" class="form-control" aria-label="Text input with dropdown button" >
+      <input type="text" id="tagDisplayHidden" name="tagName" placeholder="Selected Tag" value="" class="form-control" aria-label="Text input with dropdown button" hidden>
+      <input type="text" id="tagDisplay" placeholder="Selected Tag" value="" class="form-control" aria-label="Text input with dropdown button" disabled>
       <div class="input-group-btn">
       <!-- <button type="button" class="btn btn-secondary" aria-haspopup="true" aria-expanded="false">+</button> -->
         </div>
@@ -179,16 +203,34 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>
-
-
-<div class="col-xs-0 col-md-1">
-  
-</div> 
 </div>
+
+<!-- Add Tag Modal -->
+<form method="GET">
+  <div class="modal fade" id="addTagModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="newTagInput" name="newTag" placeholder="Add a new tag" value="" class="form-control" aria-label="Text input to add new tag">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save New Tag</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
 
 <div class="row">
   
-<div class="col">
+<div class="col-xs-12 col-md-8 offset-md-2">
   <h4>Tasks</h4>
 
 
@@ -206,6 +248,9 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
   <?php 
 
           foreach (getTasks(getDb()) as $task) {
+
+            $tag_name = getTagsForTasks(getDb(), $task['tag_id']);
+
             
         ?>
     <tr>
@@ -217,7 +262,8 @@ if (isset($_GET['task']) && isset($_GET['startTime']) && isset($_GET['endTime'])
       </th>
         <td><?=$task['task_start']?></td>
         <td><?=$task['task_name']?></td>
-        <td><?=$task['tag_id']?></td>
+        <!-- <td><?=$task['tag_id']?></td> -->
+        <td><?=$tag_name[0]["tag_name"]?></td>
         <td><?=$task['task_dur']?> hrs</td>
     </tr>
     <?php 
