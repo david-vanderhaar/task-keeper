@@ -1,7 +1,29 @@
 <div class="row">
   
 <div class="col-xs-12 col-md-8 offset-md-2">
-  <h4>Tasks</h4>
+  <!-- <h4>Tasks</h4> -->
+  <form action="" method="get">
+  <div class="btn-group">
+  <input type="text" id="sortedByInput" name="sortedByInput" value="<?=$safeSortTasks;?>" hidden>
+  <button id="sortedByDisplay" class="btn btn-secondary btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <?=$safeSortTasks?>
+  </button>
+  <div class="dropdown-menu">
+    <?php 
+            foreach (getTags(getDb()) as $tag) {
+        ?>
+          <button type="submit" class="dropdown-item btn btn-primary" href="#" onclick="changeTaskSortedByDisplay('<?=$tag['tag_name'];?>')">
+          <?=$tag['tag_name'];?>
+          </button>
+        <?php 
+          }
+     ?>
+          <button type="submit" class="dropdown-item btn btn-primary" href="#" onclick="changeTaskSortedByDisplay('All Tasks')">
+          All Tasks
+          </button>
+  </div>
+</div>
+</form>
 
 
 <table class="table table-hover">
@@ -17,10 +39,9 @@
   <tbody>
   <?php 
 
-          foreach (getTasks(getDb()) as $task) {
+          foreach (getTasks(getDb(), $safeSortTasks) as $task) {
 
             $tag_name = getTagsForTasks(getDb(), $task['tag_id']);
-
             
         ?>
     <tr>

@@ -59,7 +59,7 @@
   </div>
   <div class="alert <?=$statusAlertType;?>" id="statusAlert" name="statusDisplay" role="alert">
   <!-- <strong>Finished!</strong> You successfully created a new <strong>tag group</strong>. -->
-  <p><?=$statusDisplayMessage;?></p>
+  <p id="statusMessage"><?=$statusDisplayMessage;?></p>
   </div>
   
 </form>
@@ -73,7 +73,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add New Tag Group</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

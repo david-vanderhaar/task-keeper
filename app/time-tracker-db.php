@@ -2,7 +2,6 @@
 <?php
 
 $statusDisplayMessage = null;
-$statusHidden = true;
 $statusAlertType = 'alert-success';
 
 if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) && isset($_GET['endTime']) && isset($_GET['tagName'])){
@@ -15,11 +14,11 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
     addTask(getDb(), $safetask, $safestartTime, $safeendTime, $safetagname);
     
     $statusDisplayMessage = 'Task Added';
-
+    $statusAlertType = 'alert-success';
   } else {
       // print_r('tag field: ' . $_GET['tag'] . ' ');
       $statusDisplayMessage = 'one or more fields are empty';
-      $statusAlertType = 'alert-warning';
+      $statusAlertType = 'alert-danger';
       // print_r('one or more fields are empty<br/>');
       // print_r('tag_name field is set: ');
       // var_dump(isset($_GET['tagName']));
@@ -33,6 +32,13 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
   if (isset($_GET['removeTaskId'])) {
     $safeId = htmlentities($_GET['removeTaskId']);
     removeTask(getDb(), $safeId);
+  }
+
+  if (isset($_GET['sortedByInput'])) {
+      $safeSortTasks = htmlentities($_GET['sortedByInput']);
+      var_dump($safeSortTasks);
+      $statusDisplayMessage = 'Tasks Sorted';
+      $statusAlertType = 'alert-success';
   }
 
   function getDb () {
@@ -109,8 +115,18 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
     return pg_fetch_all($request);
   }
 
-  function getTasks($db) {
-    $request = pg_query(getDb(), "SELECT * FROM task order by task_start;");
+  function getTasks($db, $sortTasks) {
+
+    $sortByTagId = pg_query(getDb(),"SELECT tag_id FROM tag WHERE tag_name=" . '\'' . $sortTasks . '\'' . ";");
+    $sortByTagId = pg_fetch_all($sortByTagId)[0]["tag_id"];
+
+    if ($sortTasks == "All Tasks") {
+      $stmt = "SELECT * FROM task order by task_start;";
+    } else {
+      $stmt = "SELECT * FROM task WHERE tag_id=" . '\'' . $sortByTagId . '\'' . "order by task_start;";
+    }
+  
+    $request = pg_query(getDb(), $stmt);
     return pg_fetch_all($request);
   }
 
