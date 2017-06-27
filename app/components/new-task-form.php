@@ -1,10 +1,12 @@
 <div class="row">
-<div class="col-xs-12 col-md-6 offset-md-3">
+<div class="col-xs-12 col-md-6 offset-md-3 main-form">
 <form class="form center" method="GET">
-
+<div class="row">
+<div class="col">
   <label class="sr-only" for="task">Task</label>
   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="task" name="task"  placeholder="Task">
-
+</div>
+<div class="col">
     <label class="sr-only" for="tag">Tag</label>
     <div class="input-group">
       <div class="input-group-btn">
@@ -29,32 +31,36 @@
       <input type="text" id="tagDisplayHidden" name="tagName" placeholder="Selected Tag" value="" class="form-control" aria-label="Text input with dropdown button" hidden>
       <input type="text" id="tagDisplay" placeholder="Selected Tag" value="" class="form-control" aria-label="Text input with dropdown button" disabled>
       <div class="input-group-btn">
-      <!-- <button type="button" class="btn btn-secondary" aria-haspopup="true" aria-expanded="false">+</button> -->
         </div>
     </div>
-
+    </div>
+</div>
    <?php
    {
       $currentDate = date("Y-m-d\TH:m");
    ?> 
-
+   <div class="row">
+<div class="col">
   <div class="input-group mb-2 mr-sm-2 mb-sm-0">
   <p class="input-group-addon" id="startAddon">Start</p>
   <label class="sr-only" for="startTime">Start Time</label>
   <input type="datetime-local" value="<?=$currentDate?>" class="form-control mb-2 mr-sm-2 mb-sm-0" id="startTime" name="startTime">
   </div>
-
+</div>
+<div class="col">
   <div class="input-group mb-2 mr-sm-2 mb-sm-0">
   <p class="input-group-addon" id="endAddon">End</p>
   <label class="sr-only" for="endTime">End Time</label>
   <input type="datetime-local" value="<?=$currentDate?>" class="form-control mb-2 mr-sm-2 mb-sm-0" id="endTime" name="endTime">
+  </div>
+  </div>
   </div>
 <?php
   }
 ?>
 
 
-  <div class="card">
+  <div class="card submit-btn">
   <button type="submit" class="btn btn-primary">Submit</button>
   </div>
   <div class="alert <?=$statusAlertType;?>" id="statusAlert" name="statusDisplay" role="alert">

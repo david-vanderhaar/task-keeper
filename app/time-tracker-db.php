@@ -4,24 +4,24 @@
 $statusDisplayMessage = null;
 $statusAlertType = 'alert-success';
 
+$totalHoursSpent = 0;
+
+$safeSortTasksPrevious = null;
+
 if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) && isset($_GET['endTime']) && isset($_GET['tagName'])){
     $safetask = htmlentities($_GET['task']);
     $safestartTime = htmlentities($_GET['startTime']);
     $safeendTime = htmlentities($_GET['endTime']);
     $safetagname = htmlentities($_GET['tagName']);
     $safeduration = htmlentities($_GET['duration']);
-    var_dump(isset($_GET['task']));
+    // var_dump(isset($_GET['task']));
     addTask(getDb(), $safetask, $safestartTime, $safeendTime, $safetagname);
     
     $statusDisplayMessage = 'Task Added';
     $statusAlertType = 'alert-success';
   } else {
-      // print_r('tag field: ' . $_GET['tag'] . ' ');
       $statusDisplayMessage = 'one or more fields are empty';
       $statusAlertType = 'alert-danger';
-      // print_r('one or more fields are empty<br/>');
-      // print_r('tag_name field is set: ');
-      // var_dump(isset($_GET['tagName']));
     }
 
   if (isset($_GET['newTag'])) {
@@ -36,9 +36,13 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
 
   if (isset($_GET['sortedByInput'])) {
       $safeSortTasks = htmlentities($_GET['sortedByInput']);
-      var_dump($safeSortTasks);
+      $safeSortTasksPrevious = $safeSortTasks;
+      // var_dump($safeSortTasks);
+      // var_dump($safeSortTasksPrevious);
       $statusDisplayMessage = 'Tasks Sorted';
       $statusAlertType = 'alert-success';
+  } else {
+    $safeSortTasks = 'All Tasks';
   }
 
   function getDb () {
@@ -52,11 +56,11 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
   }
 
   function addTask ($db, $task, $startTime, $endTime, $tag_name) {
-    print_r('task name: ' . $task . '<br/>');
-    print_r('tag name: ' . $tag_name . '<br/>');
+    // print_r('task name: ' . $task . '<br/>');
+    // print_r('tag name: ' . $tag_name . '<br/>');
     $tag_id = getTagId($db, $tag_name);
     $tag_id = $tag_id[0]["tag_id"];
-    print_r('tag id: ' . $tag_id);
+    // print_r('tag id: ' . $tag_id);
 
 
     $taskDur = getTaskDur($db, $startTime, $endTime);
@@ -77,7 +81,7 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
       . ', ' . '\'' . $taskDur[0]['?column?'] . '\''
       . ');';
   }
-    print_r($stmt);
+    // print_r($stmt);
     $result = pg_query($stmt);
 
   }
@@ -90,7 +94,7 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
     . '\'' . $tag_name . '\''
     .');';
     $result = pg_query($stmt);
-    var_dump(pg_query($stmt));
+    // var_dump(pg_query($stmt));
     if ($result === false) {
       $statusAlertType = 'alert-warning';
       $statusDisplayMessage = 'This Tag Already Exists';
@@ -102,13 +106,10 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
   function getTagId ($db, $tag_name) {
     $request = pg_query(getDb(), "SELECT tag_id FROM tag WHERE tag_name=".'\''.$tag_name.'\''.";");
     // print_r("SELECT tag_id FROM tag WHERE tag_name=".'\''.$tag_name.'\''.";");
-    var_dump(pg_fetch_all($request));
+    // var_dump(pg_fetch_all($request));
     return pg_fetch_all($request);
   }
 
-  function addTagToTask ($db, $tag, $task) {
-
-  }
 
   function getTasksSortedByTag ($sortByTagId) {
     $request = pg_query(getDb(), "SELECT * FROM task WHERE tag_id=" . '\'' . $sortByTagId . '\'' . "order by task_start;");
@@ -116,6 +117,7 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
   }
 
   function getTasks($db, $sortTasks) {
+    global $safeSortTasks;
 
     $sortByTagId = pg_query(getDb(),"SELECT tag_id FROM tag WHERE tag_name=" . '\'' . $sortTasks . '\'' . ";");
     $sortByTagId = pg_fetch_all($sortByTagId)[0]["tag_id"];
@@ -125,7 +127,7 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
     } else {
       $stmt = "SELECT * FROM task WHERE tag_id=" . '\'' . $sortByTagId . '\'' . "order by task_start;";
     }
-  
+
     $request = pg_query(getDb(), $stmt);
     return pg_fetch_all($request);
   }
@@ -163,7 +165,7 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
 
   function removeTask ($db, $id) {
     $stmt = "delete from task where task_id=". $id;
-    var_dump($stmt);
+    // var_dump($stmt);
     $result = pg_query($stmt);
   }
 
