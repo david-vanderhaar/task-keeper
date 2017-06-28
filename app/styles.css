@@ -1,0 +1,29 @@
+.track-up {
+	position: relative;
+	top: 10px;
+}
+
+.track-down {
+	padding: 20px 20px;
+}
+
+.track-final {
+	font-size: 40px;
+	padding-left: 10px; 
+}
+
+.submit-btn {
+	margin: 10px;
+}
+
+.main-form .row {
+	padding: 10px 0;
+}
+
+.mainTitle {
+	text-align: center;
+}
+
+#statusMessage {
+	text-align: center;
+}

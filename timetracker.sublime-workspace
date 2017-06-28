@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"safeta",
+				"safetag_id"
+			],
+			[
 				"btn-",
 				"btn-primary \tBootstrap 3 Class"
 			],
@@ -347,7 +351,16 @@
 			"file": "app/index.php",
 			"settings":
 			{
-				"buffer_size": 5676,
+				"buffer_size": 7304,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/main.js",
+			"settings":
+			{
+				"buffer_size": 218,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -585,7 +598,8 @@
 	},
 	"expanded_folders":
 	[
-		"/home/dvanderhaar/bootcamp-s17/timetracker"
+		"/home/dvanderhaar/bootcamp-s17/timetracker",
+		"/home/dvanderhaar/bootcamp-s17/timetracker/app"
 	],
 	"file_history":
 	[
@@ -1008,15 +1022,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5676,
+						"buffer_size": 7304,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3445,
-								3445
+								2296,
+								2296
 							]
 						],
 						"settings":
@@ -1026,7 +1040,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2494.0,
+						"translation.y": 2117.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1034,6 +1048,34 @@
 				},
 				{
 					"buffer": 1,
+					"file": "app/main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 218,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								121,
+								121
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
 					"file": "README.md",
 					"semi_transient": false,
 					"settings":
@@ -1057,7 +1099,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -1638,7 +1680,7 @@
 		[
 			[
 				"",
-				"~/bootcamp-s17/the_beat_laboratory/beatlab.sublime-project"
+				"~/bootcamp-s17/blog/Bootcamp-blog.sublime-project"
 			]
 		],
 		"width": 380.0
