@@ -1,3 +1,7 @@
+body {
+	background-color:#d8e9ff;
+}
+
 .track-up {
 	position: relative;
 	top: 10px;
@@ -5,6 +9,12 @@
 
 .track-down {
 	padding: 20px 20px;
+	transition: 1s;
+}
+
+.track-down:hover {
+	padding: 20px 40px;
+	transition: 1s;
 }
 
 .track-final {
