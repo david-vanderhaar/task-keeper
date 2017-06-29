@@ -24,15 +24,33 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
       $statusAlertType = 'alert-danger';
     }
 
-  if (isset($_GET['newTag'])) {
+  if (isset($_GET['newTag']) && ($_GET['newTag'] !== "")) {
     $safeNewTag = htmlentities($_GET['newTag']);
     addTag(getDb(), $safeNewTag);
+  } else {
+    // $statusDisplayMessage = 'Give your tag a name';
+    // $statusAlertType = 'alert-warning';
   }
 
   if (isset($_GET['removeTaskId'])) {
     $safeId = htmlentities($_GET['removeTaskId']);
     removeTask(getDb(), $safeId);
+
+    $statusDisplayMessage = 'Task Removed';
+    $statusAlertType = 'alert-success';
   }
+
+  if (isset($_GET['removeTagId'])) {
+    $safeTagId = htmlentities($_GET['removeTagId']);
+    removeTag(getDb(), $safeTagId);
+
+    // $statusDisplayMessage = 'Tag Group Removed';
+    // $statusAlertType = 'alert-success';
+  }
+  //  else {
+  //   $statusDisplayMessage = 'Tag could not be removed, still contains tasks';
+  //   $statusAlertType = 'alert-danger';
+  // }
 
   if (isset($_GET['sortedByInput'])) {
       $safeSortTasks = htmlentities($_GET['sortedByInput']);
@@ -99,6 +117,7 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
       $statusAlertType = 'alert-warning';
       $statusDisplayMessage = 'This Tag Already Exists';
     } else {
+      $statusAlertType = 'alert-success';
        $statusDisplayMessage = 'Tag Group Added';
     }
   }
@@ -167,8 +186,21 @@ if (isset($_GET['task']) && ($_GET['task'] !== "") && isset($_GET['startTime']) 
     $stmt = "delete from task where task_id=". $id;
     // var_dump($stmt);
     $result = pg_query($stmt);
+
   }
 
+  function removeTag ($db, $id) {
+    $stmt = "delete from tag where tag_id=". $id;
+    // var_dump($stmt);
+    $result = pg_query($stmt);
+    if ($result != false){
+    $statusDisplayMessage = 'Tag Group Removed';
+    $statusAlertType = 'alert-success';
+  } else {
+    $statusDisplayMessage = 'Tag could not be removed, still contains tasks';
+    $statusAlertType = 'alert-danger';
+  }
+  }
   
 
 ?>
